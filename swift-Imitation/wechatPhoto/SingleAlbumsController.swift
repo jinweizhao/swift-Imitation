@@ -18,6 +18,8 @@ class SingleAlbumsController: UIViewController,UICollectionViewDelegate,UICollec
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        setRightNav()
+        
         flowLayout = UICollectionViewFlowLayout()
         let screentWidth = UIScreen.main.bounds.width
         flowLayout.minimumLineSpacing = 2
@@ -55,5 +57,14 @@ class SingleAlbumsController: UIViewController,UICollectionViewDelegate,UICollec
         return 100
     }
     
-
+    func setRightNav() {
+        
+        let rightItem = UIBarButtonItem(title: "Dismiss", style: .plain, target: self, action: #selector(close))
+        self.navigationItem.rightBarButtonItem = rightItem
+        
+    }
+    
+    func close() {
+        self.navigationController?.dismiss(animated: true, completion: nil)
+    }
 }

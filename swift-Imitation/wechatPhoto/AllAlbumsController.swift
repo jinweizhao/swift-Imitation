@@ -12,9 +12,21 @@ class AllAlbumsController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        
+        setRightNav()
+        
         
     }
-
+    
+    func setRightNav() {
+        
+        let rightItem = UIBarButtonItem(title: "Dismiss", style: .plain, target: self, action: #selector(close))
+        self.navigationItem.rightBarButtonItem = rightItem
+        
+    }
+    
+    func close() {
+        self.navigationController?.dismiss(animated: true, completion: nil)
+    }
 
 }
