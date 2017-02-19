@@ -7,16 +7,159 @@
 //
 
 import UIKit
+import Photos
 
-class AllAlbumsController: UIViewController {
 
+
+class AlbumItem : NSObject {
+    
+    var title : String?
+    
+    var image : UIImage?
+    
+    var photosCount : NSInteger = 0
+    
+    var fetchResult : PHFetchResult<AnyObject>?
+    
+    
+    init(title : String , fetchResult : PHFetchResult<AnyObject>) {
+        
+        super.init()
+        
+        self.title = title
+        self.fetchResult = fetchResult
+        
+        if fetchResult.count > 0 {
+            self.photosCount = fetchResult.count
+            PHCachingImageManager().requestImage(for: fetchResult.firstObject as! PHAsset, targetSize: CGSize.init(width: 44, height: 44), contentMode: .aspectFill, options: nil, resultHandler: { [weak self] (getImage, _) in
+                self?.image = getImage
+            })
+        }
+        
+    }
+    
+}
+
+
+class AllAlbumsController: UIViewController,UITableViewDataSource,UITableViewDelegate {
+
+    var tableView : UITableView?
+    var items : [AlbumItem] = []
+    var cacheImageManager : PHCachingImageManager?
+    
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        cacheImageManager = PHCachingImageManager()
+        
         setRightNav()
+        
+        getAlbums()
+        
+        setTableView()
+        
         
         
     }
+    
+    func getAlbums() {
+        let smartAlbums = PHAssetCollection.fetchAssetCollections(with: .smartAlbum, subtype: .albumRegular, options: nil)
+        
+        convertCollections(collection: smartAlbums as! PHFetchResult<AnyObject>)
+        
+        
+        let userAlbums = PHCollectionList.fetchTopLevelUserCollections(with: nil)
+        
+        convertCollections(collection: userAlbums as PHFetchResult<PHCollection> as! PHFetchResult<AnyObject>)
+        
+        
+    }
+    
+    //将相册数组转化成数据源items
+    func convertCollections(collection : PHFetchResult<AnyObject>) {
+        
+//        print(collection)
+        
+        for i in 0..<collection.count {
+            //获取当前相册图片
+            let resultOptions = PHFetchOptions()
+            
+            resultOptions.sortDescriptors = [NSSortDescriptor(key : "creationDate" , ascending : false)]
+            
+            //获取相册中文件类新
+//            resultOptions.predicate = NSPredicate(format: "mediaType = %d", PHAssetMediaType.image.rawValue)
+            
+            guard let phassetCollection = collection[i] as? PHAssetCollection else { return  }
+            
+            let assetFetchResult = PHAsset.fetchAssets(in: phassetCollection, options: resultOptions)
+            
+//            print(assetFetchResult)
+            
+//            if assetFetchResult.count > 0 {
+                self.items.append(AlbumItem(title: phassetCollection.localizedTitle!, fetchResult: assetFetchResult as! PHFetchResult<AnyObject>))
+//            }
+            
+        }
+        
+    }
+    
+    func setTableView() {
+        
+        tableView = UITableView(frame: self.view.bounds, style: .plain)
+        tableView?.delegate = self;
+        tableView?.dataSource = self;
+//        tableView?.rowHeight = 80
+        tableView?.register(NSClassFromString(UITableViewCell.description()), forCellReuseIdentifier: UITableViewCell.description())
+        self.view.addSubview(tableView!)
+    }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        tableView.deselectRow(at: indexPath, animated: true)
+        
+        let item = self.items[indexPath.row]
+        if item.fetchResult?.count == 0 {return}
+            
+        let singleAlbumVC = SingleAlbumsController()
+        singleAlbumVC.fetchResult = item.fetchResult
+        
+        self.navigationController?.pushViewController(singleAlbumVC, animated: true)
+        
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: UITableViewCell.description(), for: indexPath)
+        
+        let item = self.items[indexPath.row]
+//        var title : String
+        
+//        if item.title == "All Photos" {
+//            title = "全部照片"
+//        } else {
+//            
+//        }
+        
+        cell.textLabel?.text = "\(item.title!)   (\(item.photosCount))"
+        
+        if item.image == nil{
+            cell.imageView?.image = nil
+            return cell
+        }
+        
+        cell.imageView?.image = item.image!
+        
+        return cell
+        
+    }
+    
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return self.items.count
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        
+    }
+    
     
     func setRightNav() {
         

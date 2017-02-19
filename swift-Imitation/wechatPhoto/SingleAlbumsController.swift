@@ -7,16 +7,27 @@
 //
 
 import UIKit
+import Photos
+
 
 class SingleAlbumsController: UIViewController,UICollectionViewDelegate,UICollectionViewDataSource {
 
     var photosCollectionView : UICollectionView! = nil
     var flowLayout : UICollectionViewFlowLayout! = nil
     
+    var fetchResult : PHFetchResult<AnyObject>?
+    
+    var itemSize : CGSize = CGSize.zero
     
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+//        if fetchResult == nil {
+//            let allPhotosOptions = PHFetchOptions()
+//            allPhotosOptions.sortDescriptors = [NSSortDescriptor(key: "creationDate", ascending: true)]
+//            fetchResult = PHAsset.fetchAssets(with: allPhotosOptions)
+//        }
         
         setRightNav()
         
@@ -26,6 +37,7 @@ class SingleAlbumsController: UIViewController,UICollectionViewDelegate,UICollec
         flowLayout.minimumInteritemSpacing = 2
         flowLayout.sectionInset = UIEdgeInsetsMake(2, 2, 2, 2)
         let itemWidth = (screentWidth - 2 - 2 - 3 * 2) / 4
+        self.itemSize = CGSize(width: itemWidth, height: itemWidth)
         flowLayout.itemSize = CGSize(width: itemWidth, height: itemWidth)
         
         
@@ -47,14 +59,22 @@ class SingleAlbumsController: UIViewController,UICollectionViewDelegate,UICollec
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: String(describing :ThumbnailCell.self) , for: indexPath) as? ThumbnailCell else {
             fatalError("fatalerror-cell")
         }
+        
+        let item = self.fetchResult?[indexPath.row]
+        
+        print(item!)
+        
+        PHCachingImageManager().requestImage(for: item as! PHAsset, targetSize: self.itemSize, contentMode: .aspectFill, options: nil) { (image, _) in
             
+            cell.imgView.image = image
             
-            
+        }
+        
         return cell
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 100
+        return (self.fetchResult?.count)!
     }
     
     func setRightNav() {
@@ -63,7 +83,9 @@ class SingleAlbumsController: UIViewController,UICollectionViewDelegate,UICollec
         self.navigationItem.rightBarButtonItem = rightItem
         
     }
-    
+    override func viewWillAppear(_ animated: Bool) {
+        self.photosCollectionView .scrollToItem(at: NSIndexPath.init(item: (self.fetchResult?.count)! - 1, section: 0) as IndexPath, at: .bottom, animated: false)
+    }
     func close() {
         self.navigationController?.dismiss(animated: true, completion: nil)
     }
