@@ -19,10 +19,10 @@ class AlbumItem : NSObject {
     
     var photosCount : NSInteger = 0
     
-    var fetchResult : PHFetchResult<AnyObject>?
+    var fetchResult : PHFetchResult<PHAsset>?
     
     
-    init(title : String , fetchResult : PHFetchResult<AnyObject>) {
+    init(title : String , fetchResult : PHFetchResult<PHAsset>) {
         
         super.init()
         
@@ -31,7 +31,9 @@ class AlbumItem : NSObject {
         
         if fetchResult.count > 0 {
             self.photosCount = fetchResult.count
-            PHCachingImageManager().requestImage(for: fetchResult.firstObject as! PHAsset, targetSize: CGSize.init(width: 44, height: 44), contentMode: .aspectFill, options: nil, resultHandler: { [weak self] (getImage, _) in
+            let asset = fetchResult.firstObject
+            
+            PHCachingImageManager().requestImage(for: asset!, targetSize: CGSize.init(width: 44, height: 44), contentMode: .aspectFill, options: nil, resultHandler: { [weak self] (getImage, _) in
                 self?.image = getImage
             })
         }
@@ -66,18 +68,29 @@ class AllAlbumsController: UIViewController,UITableViewDataSource,UITableViewDel
     func getAlbums() {
         let smartAlbums = PHAssetCollection.fetchAssetCollections(with: .smartAlbum, subtype: .albumRegular, options: nil)
         
-        convertCollections(collection: smartAlbums as! PHFetchResult<AnyObject>)
-        
+//        convertAssetCollections(assetCollections: smartAlbums)
+        convertCollections(collection: smartAlbums as! PHFetchResult<PHCollection>)
         
         let userAlbums = PHCollectionList.fetchTopLevelUserCollections(with: nil)
         
-        convertCollections(collection: userAlbums as PHFetchResult<PHCollection> as! PHFetchResult<AnyObject>)
+        convertCollections(collection: userAlbums)
         
         
     }
     
-    //将相册数组转化成数据源items
-    func convertCollections(collection : PHFetchResult<AnyObject>) {
+    //转换智能相册
+//    func convertAssetCollections(assetCollections : PHFetchResult<PHAssetCollection>) {
+//        for i in 0..<assetCollections.count {
+//            
+//            let assetCollection = assetCollections[i]
+//            
+//            
+//            
+//        }
+//    }
+    
+    //转换用户相册
+    func convertCollections(collection : PHFetchResult<PHCollection>) {
         
 //        print(collection)
         
@@ -85,7 +98,7 @@ class AllAlbumsController: UIViewController,UITableViewDataSource,UITableViewDel
             //获取当前相册图片
             let resultOptions = PHFetchOptions()
             
-            resultOptions.sortDescriptors = [NSSortDescriptor(key : "creationDate" , ascending : false)]
+            resultOptions.sortDescriptors = [NSSortDescriptor(key : "creationDate" , ascending : true)]
             
             //获取相册中文件类新
 //            resultOptions.predicate = NSPredicate(format: "mediaType = %d", PHAssetMediaType.image.rawValue)
@@ -97,7 +110,7 @@ class AllAlbumsController: UIViewController,UITableViewDataSource,UITableViewDel
 //            print(assetFetchResult)
             
 //            if assetFetchResult.count > 0 {
-                self.items.append(AlbumItem(title: phassetCollection.localizedTitle!, fetchResult: assetFetchResult as! PHFetchResult<AnyObject>))
+                self.items.append(AlbumItem(title: phassetCollection.localizedTitle!, fetchResult: assetFetchResult))
 //            }
             
         }
@@ -121,6 +134,8 @@ class AllAlbumsController: UIViewController,UITableViewDataSource,UITableViewDel
         if item.fetchResult?.count == 0 {return}
             
         let singleAlbumVC = SingleAlbumsController()
+        singleAlbumVC.title = item.title
+        
         singleAlbumVC.fetchResult = item.fetchResult
         
         self.navigationController?.pushViewController(singleAlbumVC, animated: true)

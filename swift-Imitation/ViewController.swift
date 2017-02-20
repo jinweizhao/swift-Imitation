@@ -44,10 +44,6 @@ class ViewController: UIViewController {
         singleAlbumsVC.title = "全部照片"
         singleAlbumsVC.view.backgroundColor = UIColor.white
         
-        let allPhotosOptions = PHFetchOptions()
-        allPhotosOptions.sortDescriptors = [NSSortDescriptor(key: "creationDate", ascending: true)]
-        singleAlbumsVC.fetchResult = PHAsset.fetchAssets(with: allPhotosOptions) as? PHFetchResult<AnyObject>
-        
         nav.pushViewController(singleAlbumsVC, animated: false)
         
         self.present(nav, animated: true, completion: nil)

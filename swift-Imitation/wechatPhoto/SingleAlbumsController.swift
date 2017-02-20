@@ -15,19 +15,19 @@ class SingleAlbumsController: UIViewController,UICollectionViewDelegate,UICollec
     var photosCollectionView : UICollectionView! = nil
     var flowLayout : UICollectionViewFlowLayout! = nil
     
-    var fetchResult : PHFetchResult<AnyObject>?
     
+    var fetchResult : PHFetchResult<PHAsset>?
     var itemSize : CGSize = CGSize.zero
-    
+    fileprivate let imageManager = PHCachingImageManager()
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-//        if fetchResult == nil {
-//            let allPhotosOptions = PHFetchOptions()
-//            allPhotosOptions.sortDescriptors = [NSSortDescriptor(key: "creationDate", ascending: true)]
-//            fetchResult = PHAsset.fetchAssets(with: allPhotosOptions)
-//        }
+        if fetchResult == nil {
+            let allPhotosOptions = PHFetchOptions()
+            allPhotosOptions.sortDescriptors = [NSSortDescriptor(key: "creationDate", ascending: true)]
+            fetchResult = PHAsset.fetchAssets(with: allPhotosOptions)
+        }
         
         setRightNav()
         
@@ -40,8 +40,9 @@ class SingleAlbumsController: UIViewController,UICollectionViewDelegate,UICollec
         self.itemSize = CGSize(width: itemWidth, height: itemWidth)
         flowLayout.itemSize = CGSize(width: itemWidth, height: itemWidth)
         
+        self.automaticallyAdjustsScrollViewInsets = false
         
-        photosCollectionView = UICollectionView(frame: CGRect.init(x: 0, y: 0, width: screentWidth, height: UIScreen.main.bounds.height - 44), collectionViewLayout: flowLayout)
+        photosCollectionView = UICollectionView(frame: CGRect.init(x: 0, y: 64, width: screentWidth, height: UIScreen.main.bounds.height - 44 - 64), collectionViewLayout: flowLayout)
         photosCollectionView.delegate = self
         photosCollectionView.dataSource = self
         photosCollectionView.backgroundColor = UIColor.white
@@ -62,12 +63,21 @@ class SingleAlbumsController: UIViewController,UICollectionViewDelegate,UICollec
         
         let item = self.fetchResult?[indexPath.row]
         
-        print(item!)
+        if item?.mediaType == .video {
+            
+            cell.typeLabel.isHidden = false
+            
+            cell.typeLabel.text = "Au" + (item?.duration.description)!
+            
+            
+        } else if item?.mediaType == .image {
+            
+            cell.typeLabel.isHidden = true
+            
+        }
         
-        PHCachingImageManager().requestImage(for: item as! PHAsset, targetSize: self.itemSize, contentMode: .aspectFill, options: nil) { (image, _) in
-            
+        imageManager.requestImage(for: item!, targetSize: self.itemSize, contentMode: .aspectFill, options: nil) { (image, _) in
             cell.imgView.image = image
-            
         }
         
         return cell

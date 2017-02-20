@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="11762" systemVersion="16C67" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="11762" systemVersion="16B2657" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
     <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
@@ -30,23 +30,33 @@
                             <action selector="selectBtnClick:" destination="gTV-IL-0wX" eventType="touchUpInside" id="2vp-m4-LFJ"/>
                         </connections>
                     </button>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="WuD-h6-bog">
+                        <rect key="frame" x="0.0" y="158" width="305" height="0.0"/>
+                        <fontDescription key="fontDescription" type="system" pointSize="16"/>
+                        <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <nil key="highlightedColor"/>
+                    </label>
                 </subviews>
             </view>
             <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
             <constraints>
+                <constraint firstItem="WuD-h6-bog" firstAttribute="leading" secondItem="gTV-IL-0wX" secondAttribute="leading" id="17R-3T-Xt6"/>
+                <constraint firstAttribute="trailing" secondItem="WuD-h6-bog" secondAttribute="trailing" id="39S-Lz-70s"/>
                 <constraint firstItem="7Dq-qb-hhW" firstAttribute="top" secondItem="gTV-IL-0wX" secondAttribute="top" id="8yU-RZ-VHs"/>
                 <constraint firstAttribute="trailing" secondItem="7Dq-qb-hhW" secondAttribute="trailing" id="Kb4-nn-QDC"/>
                 <constraint firstItem="iB0-BI-Nwz" firstAttribute="top" secondItem="gTV-IL-0wX" secondAttribute="top" id="Mbv-Ri-kO9"/>
                 <constraint firstItem="7Dq-qb-hhW" firstAttribute="leading" secondItem="gTV-IL-0wX" secondAttribute="leading" id="buz-vo-5mB"/>
                 <constraint firstAttribute="bottom" secondItem="7Dq-qb-hhW" secondAttribute="bottom" id="dbG-X8-dnm"/>
+                <constraint firstAttribute="bottom" secondItem="WuD-h6-bog" secondAttribute="bottom" id="g1G-Fc-5zh"/>
                 <constraint firstAttribute="trailing" secondItem="iB0-BI-Nwz" secondAttribute="trailing" id="vFB-Q7-IUC"/>
             </constraints>
             <size key="customSize" width="305" height="158"/>
             <connections>
                 <outlet property="imgView" destination="7Dq-qb-hhW" id="fGZ-wh-4VX"/>
                 <outlet property="selectBtn" destination="iB0-BI-Nwz" id="QeW-yD-TYr"/>
+                <outlet property="typeLabel" destination="WuD-h6-bog" id="Kcg-MZ-AW1"/>
             </connections>
-            <point key="canvasLocation" x="-338" y="-25"/>
+            <point key="canvasLocation" x="-692" y="2"/>
         </collectionViewCell>
     </objects>
     <resources>

@@ -14,6 +14,7 @@ class ThumbnailCell: UICollectionViewCell {
     @IBOutlet weak var selectBtn: UIButton!
     @IBOutlet weak var imgView: UIImageView!
     
+    @IBOutlet weak var typeLabel: UILabel!
     
     override func awakeFromNib() {
         super.awakeFromNib()
