@@ -10,6 +10,7 @@ import UIKit
 import Photos
 
 
+
 class SingleAlbumsController: UIViewController,UICollectionViewDelegate,UICollectionViewDataSource {
 
     var photosCollectionView : UICollectionView! = nil
@@ -18,6 +19,8 @@ class SingleAlbumsController: UIViewController,UICollectionViewDelegate,UICollec
     
     var fetchResult : PHFetchResult<PHAsset>?
     var itemSize : CGSize = CGSize.zero
+    var dataArray = [PhotoModel]()
+    
     fileprivate let imageManager = PHCachingImageManager()
     
     override func viewDidLoad() {
@@ -28,6 +31,17 @@ class SingleAlbumsController: UIViewController,UICollectionViewDelegate,UICollec
             allPhotosOptions.sortDescriptors = [NSSortDescriptor(key: "creationDate", ascending: true)]
             fetchResult = PHAsset.fetchAssets(with: allPhotosOptions)
         }
+        
+//        for i in 0..<5 {
+//            let photoModel = PhotoModel()
+//            
+//        }
+        let index = fetchResult?.count
+        for _ in 0..<index! {
+            let photoModel = PhotoModel()
+            dataArray.append(photoModel)
+        }
+        
         
         setRightNav()
         
@@ -62,6 +76,9 @@ class SingleAlbumsController: UIViewController,UICollectionViewDelegate,UICollec
         }
         
         let item = self.fetchResult?[indexPath.row]
+        let photoModel = dataArray[indexPath.row]
+        
+        cell.setphotoModel(photoModel: photoModel)
         
         if item?.mediaType == .video {
             

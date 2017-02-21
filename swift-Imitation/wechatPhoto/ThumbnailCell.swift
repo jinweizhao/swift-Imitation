@@ -16,6 +16,14 @@ class ThumbnailCell: UICollectionViewCell {
     
     @IBOutlet weak var typeLabel: UILabel!
     
+    var photoModel = PhotoModel()
+    
+    func setphotoModel(photoModel : PhotoModel) {
+        self.photoModel = photoModel
+        selectBtn.isSelected = photoModel.select
+    }
+    
+    
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code
@@ -24,6 +32,8 @@ class ThumbnailCell: UICollectionViewCell {
     @IBAction func selectBtnClick(_ sender: UIButton) {
         
         selectBtn.isSelected = !selectBtn.isSelected
+        
+        photoModel.select = selectBtn.isSelected
         
         if selectBtn.isSelected {
             
