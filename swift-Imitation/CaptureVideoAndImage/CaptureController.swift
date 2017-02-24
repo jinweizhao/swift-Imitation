@@ -73,12 +73,12 @@ class CaptureController: UIViewController,WKNavigationDelegate,WKUIDelegate,UIGe
         if gesture.state == UIGestureRecognizerState.began {
             let point = gesture.location(in: webView.scrollView)
             
-            let getPointedElement = "document.elementFromPoint(\(point.x),\(point.y))"
-            
+            let getPointedElement = "document.elementFromPoint(\(point.x),\(point.y)).innerHTML"
+//            let getPointedElement = "document.body"
             webView.evaluateJavaScript(getPointedElement, completionHandler: { (obj, error) in
                 print(obj!)
                 print("---")
-                print(error!)
+                print(error ?? "noerror")
             })
             
             
