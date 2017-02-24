@@ -65,6 +65,7 @@ class SingleAlbumsController: UIViewController,UICollectionViewDelegate,UICollec
         
         let toolBar = UIToolbar.init(frame: CGRect(x: 0, y: photosCollectionView.frame.maxY, width: screentWidth, height: 44))
         toolBar.backgroundColor = UIColor.lightGray
+        setoolBarItems();
         self.view.addSubview(toolBar)
         
     }
@@ -112,6 +113,11 @@ class SingleAlbumsController: UIViewController,UICollectionViewDelegate,UICollec
     }
     override func viewWillAppear(_ animated: Bool) {
         self.photosCollectionView .scrollToItem(at: NSIndexPath.init(item: (self.fetchResult?.count)! - 1, section: 0) as IndexPath, at: .bottom, animated: false)
+    }
+    func setoolBarItems() {
+        
+        
+        
     }
     func close() {
         self.navigationController?.dismiss(animated: true, completion: nil)
