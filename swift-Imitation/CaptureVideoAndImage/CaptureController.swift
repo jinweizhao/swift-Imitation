@@ -36,9 +36,12 @@ class CaptureController: UIViewController,WKNavigationDelegate,WKUIDelegate,UIGe
         webView.uiDelegate = self
         self.view.addSubview(webView)
         
-        let paste = UIPasteboard.general
+//        let paste = UIPasteboard.general
         
-        let urlString = paste.string ?? "https://www.baidu.com"
+//        let urlString = paste.string ?? "https://www.baidu.com"
+        
+        let urlString = "http://www.miaopai.com/show/Qi3NR5twvM2e5k2lc-nXjw__.htm"
+        
         let request = NSURLRequest(url: URL(string: urlString)!)
         
         webView.load(request as URLRequest)
@@ -72,17 +75,30 @@ class CaptureController: UIViewController,WKNavigationDelegate,WKUIDelegate,UIGe
         
         if gesture.state == UIGestureRecognizerState.began {
             let point = gesture.location(in: webView.scrollView)
-            
-            let getPointedElement = "document.elementFromPoint(\(point.x),\(point.y)).innerHTML"
+            //第一种方式
+            let getPointedElement = "document.elementFromPoint(\(point.x),\(point.y)).src"
 //            let getPointedElement = "document.body"
             webView.evaluateJavaScript(getPointedElement, completionHandler: { (obj, error) in
-                print(obj!)
-                print("---")
-                print(error ?? "noerror")
+                let alert = UIAlertController(title: "", message: "", preferredStyle: .alert)
+                alert.addAction(UIAlertAction(title: "确定", style: .default, handler: nil))
+                if obj != nil {
+                    
+                    alert.title = "获取到了"
+                    alert.message = obj as? String
+                    
+                    let paste = UIPasteboard.general
+                    paste.string = alert.message
+                    
+                    
+                    
+                }else
+                {
+                    alert.title = "未获取到！"
+                }
+                self.present(alert, animated: true, completion: nil)
             })
             
-            
-            print(point)
+            //第二种方式：通过注入 js ，从 js 的方法中回调给 VC 需要的内容
         }
         
     }
@@ -100,6 +116,7 @@ class CaptureController: UIViewController,WKNavigationDelegate,WKUIDelegate,UIGe
     func close() {
         self.navigationController?.dismiss(animated: true, completion: nil)
     }
+    
 
 
 }
